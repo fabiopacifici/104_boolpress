@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+//use Illuminate\Http\Request;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
@@ -66,7 +67,9 @@ class PostController extends Controller
     {
         //
 
-        dd($post);
+        //dd($post);
+
+        return view('admin.posts.show', compact('post'));
     }
 
     /**
@@ -75,6 +78,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         //
+        return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -82,7 +86,35 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+
+        //dd($request->all(), $post, $post->getOriginal('title'), Str::is($post->getOriginal('title'), $request->title));
+
+
+        // validate
+        $val_data = $request->validated();
+
+        // update the image
+        if ($request->has('cover_image')) {
+            $path = Storage::put('posts_images', $request->cover_image);
+            $val_data['cover_image'] = $path;
+        }
+
+
+        // update the slug if the request has a title key
+        if (!Str::is($post->getOriginal('title'), $request->title)) {
+
+            // NB: shuld check if it exists
+            // update the post slug
+            $val_data['slug'] = $post->generateSlug($request->title);
+        }
+
+
+
+        //dd($val_data);
+        // update
+        $post->update($val_data);
+        // redirect
+        return to_route('admin.posts.index')->with('message', 'Post updated successfully');
     }
 
     /**
@@ -91,5 +123,12 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+
+        if ($post->cover_image) {
+            Storage::delete($post->cover_image);
+        }
+
+        $post->delete();
+        return to_route('admin.posts.index')->with('message', 'Post deleted successfully');
     }
 }

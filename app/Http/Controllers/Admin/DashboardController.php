@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -11,6 +12,10 @@ class DashboardController extends Controller
 
     public function index()
     {
-        return view('admin.dashboard');
+
+        $total_articles = Post::all()->count();
+        $total_users = User::all()->count();
+
+        return view('admin.dashboard', compact('total_articles', 'total_users'));
     }
 }
