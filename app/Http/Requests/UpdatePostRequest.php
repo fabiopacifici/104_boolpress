@@ -13,7 +13,8 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::id() === 1; // true
+        // return Auth::id() === 1; // true only user 1 can update posts
+        return $this->post?->user_id === Auth::id(); // any user can update posts
     }
 
     /**
@@ -27,6 +28,7 @@ class UpdatePostRequest extends FormRequest
         return [
             'title' => ['required', 'min:5', 'max:50', Rule::unique('posts')->ignore($this->post)],
             'content' => ['nullable'],
+            'category_id' => ['nullable', 'exists:categories,id'],
             'cover_image' => ['nullable', 'image', 'max:800']
         ];
     }

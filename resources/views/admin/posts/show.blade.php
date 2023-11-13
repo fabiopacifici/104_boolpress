@@ -8,5 +8,12 @@
     <p>
         {{$post->content}}
     </p>
+
+
+    <span class="badge bg-primary">
+        {{$post->category ? $post->category->name : 'Uncategorized' }}
+    </span>
+
+
 </div>
 @endsection

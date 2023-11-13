@@ -11,7 +11,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'slug', 'cover_image', 'content']; // a laravel property
+    protected $fillable = ['title', 'slug', 'cover_image', 'content', 'category_id', 'user_id']; // a laravel property
 
     //protected $guard = [] //a laravel property
 
@@ -31,5 +31,16 @@ class Post extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+
+    /**
+     * Get the user that owns the Post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

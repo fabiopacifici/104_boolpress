@@ -44,6 +44,28 @@
             @enderror
 
 
+
+            <div class="mb-3">
+                <label for="category_id" class="form-label">Categories</label>
+                <select class="form-select @error('category_id') is-invalid  @enderror" name="category_id" id="category_id">
+                    <option selected disabled>Select a category</option>
+                    <option value="">Uncategorized</option>
+
+                    @forelse ($categories as $category)
+                    <option value="{{$category->id}}" {{ $category->id == old('category_id') ? 'selected' : '' }}>{{$category->name}}</option>
+                    @empty
+
+                    @endforelse
+
+
+                </select>
+            </div>
+            @error('category_id')
+            <div class="text-danger">{{$message}}</div>
+            @enderror
+
+
+
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
                 <textarea class="form-control @error('title') is-invalid  @enderror" name="content" id="content" rows="3">{{old('content')}}</textarea>

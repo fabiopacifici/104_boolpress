@@ -12,7 +12,8 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::id() === 1;
+        //return Auth::id() === 1; // only the user with id 1 can create posts
+        return true; // all users can create posts
     }
 
     /**
@@ -25,6 +26,7 @@ class StorePostRequest extends FormRequest
         return [
             'title' => ['required', 'min:5', 'max:50', 'unique:posts'],
             'content' => ['nullable'],
+            'category_id' => ['nullable', 'exists:categories,id'],
             'cover_image' => ['nullable', 'image', 'max:500']
         ];
     }

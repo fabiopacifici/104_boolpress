@@ -7,6 +7,8 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -18,7 +20,7 @@ class PostController extends Controller
     public function index()
     {
 
-        $posts = Post::orderByDesc('id')->paginate(12);
+        $posts = Post::where('user_id', Auth::id())->orderByDesc('id')->paginate(12);
         //dd($posts);
 
         return view('admin.posts.index', compact('posts'));
@@ -30,7 +32,9 @@ class PostController extends Controller
     public function create()
     {
 
-        return view('admin.posts.create');
+        //dd(Category::all());
+        $categories = Category::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -56,6 +60,7 @@ class PostController extends Controller
 
         //dd($val_data);
         // create the new article
+        $val_data['user_id'] = Auth::id();
         Post::create($val_data);
         return to_route('admin.posts.index')->with('message', 'Post Created successfully');
     }
@@ -69,7 +74,10 @@ class PostController extends Controller
 
         //dd($post);
 
-        return view('admin.posts.show', compact('post'));
+        if ($post->user_id === Auth::id()) {
+            return view('admin.posts.show', compact('post'));
+        }
+        abort(404, 'This post does not exists');
     }
 
     /**
@@ -77,8 +85,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
-        return view('admin.posts.edit', compact('post'));
+        if ($post->user_id === Auth::id()) {
+            $categories = Category::all();
+            return view('admin.posts.edit', compact('post', 'categories'));
+        }
+        abort(404, 'This post does not exist');
     }
 
     /**
@@ -122,13 +133,16 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
 
-        if ($post->cover_image) {
-            Storage::delete($post->cover_image);
+        if ($post->user_id === Auth::id()) {
+            if ($post->cover_image) {
+                Storage::delete($post->cover_image);
+            }
+
+
+            $post->delete();
+            return to_route('admin.posts.index')->with('message', 'Post deleted successfully');
         }
-
-        $post->delete();
-        return to_route('admin.posts.index')->with('message', 'Post deleted successfully');
+        abort(403, "🛑 You cannot delete this post! it's not yours!");
     }
 }
