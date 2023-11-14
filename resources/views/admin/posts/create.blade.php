@@ -9,7 +9,6 @@
 @if ($errors->any())
 <div class="alert alert-danger" role="alert">
     <ul>
-
         @foreach ($errors->all() as $error )
         <li>{{$error}}</li>
         @endforeach
@@ -64,6 +63,29 @@
             <div class="text-danger">{{$message}}</div>
             @enderror
 
+
+
+
+            <!-- Tags Picker -->
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags</label>
+                <select multiple class="form-select" name="tags[]" id="tags">
+                    <option disabled>Select one</option>
+
+                    <!-- TODO: Improve validation outputs -->
+                    @foreach ($tags as $tag )
+                    <option value="{{$tag->id}}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>{{$tag->name}}</option>
+                    @endforeach
+
+
+                </select>
+            </div>
+            @error('tags')
+            <div class="text-danger">{{$message}}</div>
+            @enderror
+
+
+            <!-- Tags Picker -->
 
 
             <div class="mb-3">

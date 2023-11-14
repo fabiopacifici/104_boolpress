@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,8 @@ class PostController extends Controller
 
         //dd(Category::all());
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories'));
+        $tags = Tag::all();
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -61,7 +63,8 @@ class PostController extends Controller
         //dd($val_data);
         // create the new article
         $val_data['user_id'] = Auth::id();
-        Post::create($val_data);
+        $post = Post::create($val_data);
+        $post->tags()->attach($request->tags);
         return to_route('admin.posts.index')->with('message', 'Post Created successfully');
     }
 
@@ -87,7 +90,9 @@ class PostController extends Controller
     {
         if ($post->user_id === Auth::id()) {
             $categories = Category::all();
-            return view('admin.posts.edit', compact('post', 'categories'));
+            $tags = Tag::all();
+
+            return view('admin.posts.edit', compact('post', 'categories', 'tags'));
         }
         abort(404, 'This post does not exist');
     }
@@ -101,7 +106,7 @@ class PostController extends Controller
         //dd($request->all(), $post, $post->getOriginal('title'), Str::is($post->getOriginal('title'), $request->title));
 
 
-        // validate
+        // Validate 👈
         $val_data = $request->validated();
 
         // update the image
@@ -123,7 +128,16 @@ class PostController extends Controller
 
         //dd($val_data);
         // update
-        $post->update($val_data);
+        $post->update($val_data); //👈
+
+
+        if ($request->has('tags')) {
+            //dd($val_data['tags']);
+            $post->tags()->sync($val_data['tags']);
+        }
+
+
+
         // redirect
         return to_route('admin.posts.index')->with('message', 'Post updated successfully');
     }
@@ -139,6 +153,7 @@ class PostController extends Controller
                 Storage::delete($post->cover_image);
             }
 
+            $post->tags()->detach();
 
             $post->delete();
             return to_route('admin.posts.index')->with('message', 'Post deleted successfully');

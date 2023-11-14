@@ -63,7 +63,34 @@
             <div class="text-danger">{{$message}}</div>
             @enderror
 
+            <!-- Tags Picker -->
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags</label>
+                <select multiple class="form-select" name="tags[]" id="tags">
+                    <option disabled>Select one</option>
 
+                    <!-- TODO: Improve validation outputs -->
+                    @foreach ($tags as $tag )
+
+                    @if ($errors->any())
+                    <option value="{{$tag->id}}" {{in_array($tag->id, old('tags', []) )  ? 'selected' : ''}}>{{$tag->name}}</option>
+
+                    @else
+                    <option value="{{$tag->id}}" {{ $post->tags->contains($tag) ? 'selected' : '' }}>
+                        {{$tag->name}}
+                    </option>
+                    @endif
+                    @endforeach
+
+
+                </select>
+            </div>
+            @error('tags')
+            <div class="text-danger">{{$message}}</div>
+            @enderror
+
+
+            <!-- Tags Picker -->
 
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
