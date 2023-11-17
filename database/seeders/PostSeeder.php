@@ -22,7 +22,7 @@ class PostSeeder extends Seeder
             $post->title = $faker->realText(50);
 
             $post->cover_image = 'placeholders/' . $faker->image('public/storage/placeholders', category: 'Posts', fullPath: false);
-
+            $post->user_id = 1;
             //dd($post->cover_image);
             $post->slug = Str::slug($post->title, '-');
             $post->content = $faker->realText();

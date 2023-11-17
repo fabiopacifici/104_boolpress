@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('guests.welcome');
+    return redirect()->route('login');
 });
 //Route::get('posts/{post:slug}', [GuesPostController::class, 'show']);
 
