@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
@@ -30,26 +33,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
  */
 
-
-Route::get('posts', function () {
-    return response()->json([
-        'success' => true,
-        'fabio' => 'fabio',
-        'result' => Post::with('category', 'tags')->orderByDesc('id')->paginate(12)
-    ]);
-});
-
-Route::get('categories', function () {
-    return response()->json([
-        'status' => 'success',
-        'result' => App\Models\Category::all()
-    ]);
-});
+Route::get('posts', [PostController::class, 'index']);
+Route::get('posts/latest', [PostController::class, 'latest']);
+Route::get('posts/{post:slug}', [PostController::class, 'show']);
 
 
-Route::get('tags', function () {
-    return response()->json([
-        'status' => 'success',
-        'result' => App\Models\Tag::all()
-    ]);
-});
+Route::get('categories', [CategoryController::class, 'index']);
+Route::get('tags', [TagController::class, 'index']);
