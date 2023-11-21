@@ -39,4 +39,7 @@ Route::get('posts/{post:slug}', [PostController::class, 'show']);
 
 
 Route::get('categories', [CategoryController::class, 'index']);
+Route::get('categories/{category:slug}', [CategoryController::class, 'show']);
+
 Route::get('tags', [TagController::class, 'index']);
+Route::get('tags/{tag:slug}', [TagController::class, 'show']);

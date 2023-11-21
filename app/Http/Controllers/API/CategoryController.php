@@ -18,4 +18,21 @@ class CategoryController extends Controller
             'result' => Category::all()
         ]);
     }
+
+
+    public function show($slug)
+    {
+        $cat = Category::with('posts')->where('slug', $slug)->first();
+        if ($cat) {
+            return response()->json([
+                'success' => true,
+                'result' => $cat
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'result' => 'Ops! Page not found'
+            ]);
+        }
+    }
 }

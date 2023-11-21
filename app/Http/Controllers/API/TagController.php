@@ -17,4 +17,22 @@ class TagController extends Controller
             'result' => Tag::all()
         ]);
     }
+
+
+
+    public function show($slug)
+    {
+        $tag = Tag::with('posts')->where('slug', $slug)->first();
+        if ($tag) {
+            return response()->json([
+                'success' => true,
+                'result' => $tag
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'result' => 'Ops! Page not found'
+            ]);
+        }
+    }
 }
