@@ -22,6 +22,15 @@ Route::get('/', function () {
 //Route::get('posts/{post:slug}', [GuesPostController::class, 'show']);
 
 
+Route::get('/mailable', function () {
+    $lead = App\Models\Lead::find(1);
+
+    //    return new App\Mail\NewLeadEmail($lead);
+    return new App\Mail\NewLeadEmailMd($lead);
+});
+
+
+
 
 /* Admin routes */
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {

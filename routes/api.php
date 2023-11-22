@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\LeadController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\TagController;
 use Illuminate\Http\Request;
@@ -43,3 +44,6 @@ Route::get('categories/{category:slug}', [CategoryController::class, 'show']);
 
 Route::get('tags', [TagController::class, 'index']);
 Route::get('tags/{tag:slug}', [TagController::class, 'show']);
+
+
+Route::post('/contacts', [LeadController::class, 'store']);
